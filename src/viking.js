@@ -64,15 +64,17 @@ class War {
     }
 
     vikingAttack() {
-        const takeDamage = this.saxonArmy[0].receiveDamage(this.vikingArmy[0].strength);
-        if (this.saxonArmy[0].health <= 0) {
+        const randomSaxon = Math.floor(Math.random()*this.saxonArmy.length);
+        const takeDamage = this.saxonArmy[randomSaxon].receiveDamage(this.vikingArmy[randomSaxon].strength);
+        if (this.saxonArmy[randomSaxon].health <= 0) {
             this.saxonArmy.shift();
         }
         return takeDamage;
     }
     saxonAttack() {
-        const takeDamage = this.vikingArmy[0].receiveDamage(this.saxonArmy[0].strength);
-        if (this.vikingArmy[0].health <= 0) {
+        const randomViking = Math.floor(Math.random()*this.vikingArmy.length);
+        const takeDamage = this.vikingArmy[randomViking].receiveDamage(this.saxonArmy[randomViking].strength);
+        if (this.vikingArmy[randomViking].health <= 0) {
             this.vikingArmy.shift();
         }
         return takeDamage;
