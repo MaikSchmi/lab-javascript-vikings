@@ -17,6 +17,9 @@ class Viking extends Soldier {
     constructor(name, health, strength) {
         super(health, strength);
         this.name = name;
+        function myNewFunction() {
+            console.log("THis doesn't work")
+        }
     }
     receiveDamage(damage) {
         this.health -= damage;
@@ -30,6 +33,18 @@ class Viking extends Soldier {
         return `Odin Owns You All!`;
     }
 }
+
+class Clock {
+    constructor() {
+      this.time = 0;
+   
+      this.tickRegular = function () {
+        console.log();
+        this.time += 1;
+        console.log(this.time);
+      };
+    }
+  }
 
 // Saxon
 class Saxon extends Soldier {
@@ -60,22 +75,33 @@ class War {
     }
 
     vikingAttack() {
+        const attackingViking = Math.floor(Math.random() * this.vikingArmy.length);
         const randomSaxon = Math.floor(Math.random() * this.saxonArmy.length);
-        const takeDamage = this.saxonArmy[randomSaxon].receiveDamage(this.vikingArmy[randomSaxon].attack());
+        const takeDamage = this.saxonArmy[randomSaxon].receiveDamage(this.vikingArmy[attackingViking].attack());
         if (this.saxonArmy[randomSaxon].health <= 0) {
             this.saxonArmy.splice(randomSaxon, 1);
         }
         return takeDamage;
     }
     saxonAttack() {
+        const attackingSaxon = Math.floor(Math.random() * this.saxonArmy.length);
         const randomViking = Math.floor(Math.random() * this.vikingArmy.length);
-        const takeDamage = this.vikingArmy[randomViking].receiveDamage(this.saxonArmy[randomViking].attack());
+        const takeDamage = this.vikingArmy[randomViking].receiveDamage(this.saxonArmy[attackingSaxon].attack());
         if (this.vikingArmy[randomViking].health <= 0) {
             this.vikingArmy.splice(randomViking, 1);
         }
         return takeDamage;
     }
-    // Bonus consolidated vikingAttack / saxonAttack
+    // Bonus consolidated vikingAttack / saxonAttack - Called from either
+    battleAttack(army, soldier, otherArmy, otherSoldier) { // e.g. army = this.vikingArmy | soldier = Math.floor(Math.random() * army.length)
+        const takeDamage = otherArmy[otherSoldier].receiveDamage(army[soldier].attack());
+        if (otherArmy[otherSoldier].health <= 0) {
+            otherArmy.splice(otherSoldier, 1);
+        }
+        return takeDamage;
+    }
+
+    // Bonus consolidated vikingAttack / saxonAttack - Random Battle
     fractionAttack() {
         // Determine attacker and defender
         const army = [this.vikingArmy, this.saxonArmy];
