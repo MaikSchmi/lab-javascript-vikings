@@ -93,10 +93,19 @@ class War {
         return takeDamage;
     }
     // Bonus consolidated vikingAttack / saxonAttack - Called from either
-    battleAttack(army, soldier, otherArmy, otherSoldier) { // e.g. army = this.vikingArmy | soldier = Math.floor(Math.random() * army.length)
-        const takeDamage = otherArmy[otherSoldier].receiveDamage(army[soldier].attack());
-        if (otherArmy[otherSoldier].health <= 0) {
-            otherArmy.splice(otherSoldier, 1);
+    battleAttack(army, soldier) { // e.g. army = this.vikingArmy | soldier = Math.floor(Math.random() * army.length)
+        let defendingArmy;
+
+        if (army === this.vikingArmy) {
+            defendingArmy = this.saxonArmy;
+        } else {
+            defendingArmy = this.vikingArmy;
+        }
+        const defendingSoldier = Math.floor(Math.random() * defendingArmy.length)
+
+        const takeDamage = defendingArmy[defendingSoldier].receiveDamage(army[soldier].attack());
+        if (defendingArmy[defendingSoldier].health <= 0) {
+            defendingArmy.splice(defendingSoldier, 1);
         }
         return takeDamage;
     }
