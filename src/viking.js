@@ -92,23 +92,6 @@ class War {
         }
         return takeDamage;
     }
-    // Bonus consolidated vikingAttack / saxonAttack - Called from either
-    battleAttack(army, soldier) { // e.g. army = this.vikingArmy | soldier = Math.floor(Math.random() * army.length)
-        let defendingArmy;
-
-        if (army === this.vikingArmy) {
-            defendingArmy = this.saxonArmy;
-        } else {
-            defendingArmy = this.vikingArmy;
-        }
-        const defendingSoldier = Math.floor(Math.random() * defendingArmy.length)
-
-        const takeDamage = defendingArmy[defendingSoldier].receiveDamage(army[soldier].attack());
-        if (defendingArmy[defendingSoldier].health <= 0) {
-            defendingArmy.splice(defendingSoldier, 1);
-        }
-        return takeDamage;
-    }
 
     // Bonus consolidated vikingAttack / saxonAttack - Random Battle
     fractionAttack() {
@@ -143,11 +126,41 @@ class War {
         }
         return result;
     }
+
+    // Bonus consolidated vikingAttack / saxonAttack - Called from either
+    battleAttack(soldier) { 
+        // Determine attacker
+        let attacker = 0;
+        let attackingArmy;
+        let defendingArmy;
+
+        if (typeof soldier === "string") {
+            attackingArmy = this.vikingArmy;
+            defendingArmy = this.saxonArmy;
+
+            for (let i = 0; i < this.vikingArmy.length; i++) {
+                if (this.vikingArmy[i].name === soldier) {
+                    attacker = i;
+                    break;
+                }
+            }
+        } else {
+            attackingArmy = this.saxonArmy;
+            defendingArmy = this.vikingArmy;
+        }
+
+        const defendingSoldier = Math.floor(Math.random() * defendingArmy.length)
+        const takeDamage = defendingArmy[defendingSoldier].receiveDamage(attackingArmy[attacker].attack());
+        if (defendingArmy[defendingSoldier].health <= 0) {
+            defendingArmy.splice(defendingSoldier, 1);
+        }
+        return takeDamage;
+    }
 }
 
 // Test input
 const myWar = new War();
-myWar.addViking(new Viking("Bjorn", 650, 50));
+myWar.addViking(new Viking("Björn", 650, 50));
 myWar.addViking(new Viking("Eisenschild", 675, 75));
 myWar.addViking(new Viking("Ragnar", 700, 100));
 myWar.addViking(new Viking("Thor", 5000, 5000));
@@ -163,8 +176,23 @@ myWar.addSaxon(new Saxon(100, 100));
 myWar.addSaxon(new Saxon(100, 100));
 myWar.addSaxon(new Saxon(100, 100));
 
+myWar.battleAttack("Ragnar");
+
 // Fight war
-for (i = 0; i < 5000; i++) {
+for (let i = 0; i < 5000; i++) {
+    if (myWar.showStatus() === "Vikings and Saxons are still in the thick of battle.") {
+        myWar.battleAttack("Ragnar");
+        myWar.battleAttack(0);
+    } else {
+        console.log(myWar.showStatus())
+        break;
+    }
+}
+
+
+
+// Fight war
+for (let i = 0; i < 5000; i++) {
     if (myWar.showStatus() === "Vikings and Saxons are still in the thick of battle.") {
         myWar.fractionAttack();
     } else {
